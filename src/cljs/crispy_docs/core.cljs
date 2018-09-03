@@ -179,6 +179,13 @@
                     (expr-result "(atom? '())" "true")
                     (expr-result "(atom? 1)" "true")
                     (expr-result "(atom? '(1))" "false")])]}
+   {:name "List?"
+    :body [(lister [(symbols "list?")
+                    (desc "returns true if operand is a list, and false if not.")
+                    (arity 1)
+                    (expr-result "(list? '(1))" "true")
+                    (expr-result "(list? '())" "true")
+                    (expr-result "(list? 1)" "false")])]}
    {:name "Eval"
     :body [(lister [(symbols "eval")
                     (desc "evaluates the arg passed in, will evaluate deferred lists."
