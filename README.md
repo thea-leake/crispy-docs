@@ -4,6 +4,9 @@ This is the crispy-docs project.
 
 This contains the source for the documentation for the crisp lisp interpreter located at https://github.com/thea-leake/crisp.
 
+
+This content is currently hosted at: https://blooming-hollows-95289.herokuapp.com/.
+
 ## Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:
