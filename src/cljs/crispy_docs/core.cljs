@@ -22,7 +22,10 @@
                              "Though it does have one loop--for the REPL!"
                              [:br] [:br]
                              "It currently uses Clangs TCO build option"
-                             " however many of the recursive functions are currently not TCO compatible."]}
+                             " however many of the recursive functions are currently not TCO compatible."
+                             [:br] [:br]
+                             "The codebase is located " [:a {:href "https://github.com/thea-leake/crisp"} "here"]
+                             "."]}
 
                      {:name "Syntax"
                       :body  [ "Crispy's Syntax consists of lists of expressions."
@@ -199,11 +202,13 @@
                     (desc "checks if the first expression is not "
                           (code-tags "false") " or " (code-tags "nil")
                           ".  If it's not false it returns the second expression."
-                          "If it is false it returns the third expression")
-                    (arity 3)
+                          "If it is false it returns the third expression."
+                          "If it s false and the third expression is not provided it returns nil.")
+                    (arity "2 or 3")
                     (expr-result "(if true true false)" "true")
                     (expr-result "(if nil true false)" "false")
-                    (expr-result "(if 5 true false)" "true")])]}
+                    (expr-result "(if 5 true)" "true")
+                    (expr-result "(if false true)" "nil")])]}
    {:name "And"
     :body [(lister [(symbols "and")
                     (desc "returns true if all arguments are true."
