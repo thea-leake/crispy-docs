@@ -9,6 +9,7 @@
 (def code-fmt [:code>span {:style {:background-color "mediumaquamarine"}}])
 
 (def code-block-fmt [:pre>code {:style {:background-color "mediumaquamarine"
+                                        :line-height "1em"
                                         :display "block"
                                         :border "1px solid black"
                                         :padding "20px"}}])
