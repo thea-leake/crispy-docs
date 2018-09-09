@@ -6,13 +6,59 @@
 ;; -------------------------
 ;; App specific functions and definitions
 
-(defn code-tags [code-block]
-  [:code>span {:style {:background-color "mediumaquamarine"}} code-block])
+(def code-fmt [:code>span {:style {:background-color "mediumaquamarine"}}])
+
+(def code-block-fmt [:pre>code {:style {:background-color "mediumaquamarine"
+                                        :display "block"
+                                        :border "1px solid black"
+                                        :padding "20px"}}])
+
+(defn code-tags [code-line]
+  (conj code-fmt code-line))
+
+(defn list-sections [doc-list]
+  (vec (cons
+         (vec (cons :div
+                    (mapv
+                      (fn [section]
+                        [:div>a {:href (str "#" (:name section))} (:name section)])
+                      doc-list)))
+         (mapv
+           (fn [section]
+             (let [{header :name body :body} section]
+               [:div [:a {:id header}]
+                [:h3  header]
+                (vec (cons :p>:content  body))]))
+           doc-list))))
 
 (defn lister [items]
   (vec (cons :ul (mapv (fn [item]
                          (vec (cons :li item)))
                        items))))
+
+(defn expr-result [expr result]
+  ["Example: "
+   (code-tags expr)
+   " => " (code-tags result)])
+
+(defn symbols
+  ([smbl] ["Symbosl: " (code-tags smbl)])
+  ([smbl & smbls] (vec ( cons "Symbols:"
+                        ( reduce #(concat [%1] ", " [%2])
+                           (map code-tags (cons smbl smbls)))))))
+
+(defn desc [& lines]
+  (vec (cons "Purpose: " lines)))
+
+(defn arity
+  ( [] (arity "no"))
+  ( [args] [(str "Arity: takes " args " operands.")]))
+
+(defn break-lines [lines]
+  (reduce #(conj (conj %1 "\n" ) %2) [] lines))
+
+(defn code-block [lines]
+  [(vec (concat code-block-fmt (break-lines lines)))])
 
 (def about-sections [{:name "About"
                       :body ["Crispy is a Lisp designed to use as little built-in syntax, "
@@ -79,25 +125,6 @@
                              (lister [["A single quote is used to defer evaluation: " (code-tags "'")]
                                       ["Expressions deferred can be evaluated later with the " (code-tags "eval") " builtin."]
                                       ["Example deferred list: " (code-tags "'( 31 true )")]])]}])
-
-
-(defn expr-result [expr result]
-  ["Example: "
-   (code-tags expr)
-   " => " (code-tags result)])
-
-(defn symbols
-  ([smbl] ["Symbosl: " (code-tags smbl)])
-  ([smbl & smbls] (vec ( cons "Symbols:"
-                        ( reduce #(concat [%1] ", " [%2])
-                           (map code-tags (cons smbl smbls)))))))
-
-(defn desc [& lines]
-  (vec (cons "Purpose: " lines)))
-
-(defn arity
-  ( [] (arity "no"))
-  ( [args] [(str "Arity: takes " args " operands.")]))
 
 
 (def builtin-sections
@@ -267,17 +294,70 @@
                     (expr-result "(quit)" "Ending session.\nGoodbye.")])]}])
 
 
+(def example-lines [
+                    "./bin/crispy"
+                    "Crispy lisp interpreter.  Type (quit) to exit."
+                    "crispy> (define nil? (lambda '(x) '(if (= nil x) true false)))"
+                    "nil"
+                    "crispy> (nil? 5)"
+                    "false"
+                    "crispy> (nil? nil)"
+                    "true"
+                    "crispy> (define true? (lambda '(x) '(if x true false)))"
+                    "nil"
+                    "crispy> (true? 1)"
+                    "true"
+                    "crispy> (true? nil)"
+                    "false"
+                    "crispy> (true? true)"
+                    "true"
+                    "crispy> (define false? (lambda '(x) '(if x false true)))"
+                    "nil"
+                    "crispy> (false? 1)"
+                    "false"
+                    "crispy> (false? nil)"
+                    "true"
+                    "crispy> (false? false)"
+                    "true"
+                    "crispy> (define range (lambda '(r) '(let '(b (lambda '(c d) '(if (= c 0) d (b (- c 1 ) (cons c d )) )))  b r '())))"
+                    "nil"
+                    "crispy> (range 25)"
+                    "(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24)"
+                    "crispy> ((lambda '() '( + 1 4)))"
+                    "5"
+                    "crispy> (or false false nil)"
+                    "nil"
+                    "crispy> (or false  \"grr\" 1 true)"
+                    "\"grr\""
+                    "crispy> (define b \"rarr\")"
+                    "nil"
+                    "crispy> (= \"grr\" b)"
+                    "false"
+                    "crispy> (define c 1)"
+                    "nil"
+                    "crispy> (and true c 3 false 4)"
+                    "false"
+                    "crispy> (and true c 3)"
+                    "3"
+                    "crispy> ^D"
+                    "Ending session."
+                    "Goodbye."])
 
+
+(def example-sections [
+                       {:name "Example usage"
+                        :body (code-block example-lines)}])
 
 
 
 
 (def top-links [:div
                 [:a {:href "/"} "Welcome"] "\t"
-                [:a {:href "/builtins"} "Builtin Functions"]])
+                [:a {:href "/builtins"} "Builtin Functions"] "\t"
+                [:a {:href "/examples"} "Examples"]])
 
 (def welcome [:div
-              {:style {:background-color "pink"
+              {:style {:background-color "lightgreen"
                        :height "100%"}}
               [:h2 "Welcome!"]
               top-links
@@ -290,21 +370,12 @@
                top-links
                [:br]])
 
-(defn list-sections [doc-list]
-  (vec (cons
-         (vec (cons :div
-                    (mapv
-                      (fn [section]
-                        [:div>a {:href (str "#" (:name section))} (:name section)])
-                      doc-list)))
-         (mapv
-           (fn [section]
-             (let [{header :name body :body} section]
-               [:div [:a {:id header}]
-                [:h3  header]
-                (vec (cons :p>:content  body))]))
-           doc-list))))
-
+(def example-usage [:div
+                    {:style {:background-color "lightgreen"
+                             :height "100%"}}
+                    [:h2 "Examples"]
+                    top-links
+                    [:br]])
 
 ;; -------------------------
 ;; Views
@@ -314,6 +385,9 @@
 
 (defn builtins-page []
   (vec (concat builtins (list-sections builtin-sections))))
+
+(defn example-page []
+  (vec (concat example-usage (list-sections example-sections))))
 
 ;; -------------------------
 ;; Routes
@@ -328,6 +402,9 @@
 
 (secretary/defroute "/builtins" []
   (reset! page #'builtins-page))
+
+(secretary/defroute "/examples" []
+  (reset! page #'example-page))
 
 ;; -------------------------
 ;; Initialize app
