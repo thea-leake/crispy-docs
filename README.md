@@ -5,7 +5,7 @@ This is the crispy-docs project.
 This contains the source for the documentation for the crisp lisp interpreter located at https://github.com/thea-leake/crisp.
 
 
-This content is currently hosted at: https://blooming-hollows-95289.herokuapp.com/.
+This content is currently hosted at: https://crispy-lisp.herokuapp.com/.
 
 ## Development mode
 
