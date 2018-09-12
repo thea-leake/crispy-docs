@@ -354,8 +354,8 @@
 
 (def top-links [:div
                 [:a {:href "/"} "Welcome"] "\t"
-                [:a {:href "/builtins"} "Builtin Functions"] "\t"
-                [:a {:href "/examples"} "Examples"]])
+                [:a {:href "/#builtins"} "Builtin Functions"] "\t"
+                [:a {:href "/#examples"} "Examples"]])
 
 (def welcome [:div
               {:style {:background-color "lightgreen"
@@ -401,10 +401,10 @@
 (secretary/defroute "/" []
   (reset! page #'home-page))
 
-(secretary/defroute "/builtins" []
+(secretary/defroute "/#builtins" []
   (reset! page #'builtins-page))
 
-(secretary/defroute "/examples" []
+(secretary/defroute "/#examples" []
   (reset! page #'example-page))
 
 ;; -------------------------
