@@ -19,11 +19,7 @@
 
 (defn list-sections [doc-list]
   (vec (cons
-         (vec (cons :div))
-                    ; (mapv
-                    ;   (fn [section]
-                    ;     [:div>a {:href (str "#" (:name section))} (:name section)])
-                    ;   doc-list)))
+         [:div]
          (mapv
            (fn [section]
              (let [{header :name body :body} section]
